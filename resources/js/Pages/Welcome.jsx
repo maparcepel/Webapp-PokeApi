@@ -1,29 +1,37 @@
 import { Link, Head } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
+    const { data, setData, post, processing, reset, errors } = useForm({
+        searchTerm: ''
+    })
 
+    const submit = (e) => {
+        e.preventDefault();
+        post(route('search'), {
+            onSuccess: () => {
+                console.log('success');
+            }
+        });
+    }
     return (
-        <>
-            <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+        <div className="container">
 
-                <div className="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                    <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                            
-                            headr
-                        </header>
+            <div className="">
+                    <header className="text-center">
+                        
+                        <h1>Webapp PokeApi</h1>
+                    </header>
 
-                        <main className="mt-6">
-                            main
-                            
-                        </main>
+                    <main className="text-center">
+                        main
+                        
+                    </main>
 
-                        <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            footer
-                        </footer>
-                    </div>
-                </div>
+                    <footer className="text-center">
+                        Desarrollo: marcelmolina.dev@gmail.com
+                    </footer>
             </div>
-        </>
+        </div>
     );
 }
