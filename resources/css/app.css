@@ -1,4 +1,8 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities;
- */
+#history{
+    border-left: 1px solid #dcdcdc;
+    min-height: 250px;
+}
+
+li{
+    text-align: left;
+}

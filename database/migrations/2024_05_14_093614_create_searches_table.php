@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('searches', function (Blueprint $table) {
             $table->id();
             $table->string('term');
-            $table->json('result');
             $table->string('session_id');
             $table->timestamps();
         });
