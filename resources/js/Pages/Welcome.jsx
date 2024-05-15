@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 export default function Welcome() {
     const [ history, setHistory ] = useState([])
     const [ pokemon, setPokemon ] = useState()
-    const { register, handleSubmit, reset, formState: { errors} } = useForm()
+    const { register, handleSubmit, reset, setValue, formState: { errors} } = useForm()
 
     useEffect(() => {
         
@@ -15,7 +15,7 @@ export default function Welcome() {
                 const response = await axios.get('/api/history')
                 setHistory(response.data)
             } catch (error) {
-                console.error('Error en la solicitud:', error)
+                console.error('Error al intentar obtener el historial:', error)
             }
         }
         getHistory()
@@ -27,10 +27,14 @@ export default function Welcome() {
             setHistory(response.data.history)
             setPokemon(response.data)
             reset()
-            console.log(response.data)
         } catch (error) {
-            console.error('Error en la solicitud:', error)
+            setPokemon('not found')
+            console.error('Error al intentar obtener el pokemon:', error)
         }
+      }
+
+      const handleReUse = (term) => {
+            setValue('term', term)
       }
 
     return (
@@ -53,7 +57,7 @@ export default function Welcome() {
                                                 id="term"
                                                 style={{ width: '250px' }}
                                                 />
-                                            
+                                            {pokemon === 'not found' && <span>Pokemon no encontrado</span>}
                                             {errors.term && <span>Este campo es requerido</span>}
                                         </div>
                                         <div className='ms-3'>   
@@ -66,31 +70,35 @@ export default function Welcome() {
                                         </div>
                                     </div>
                                 </form>
-                                {console.log(pokemon)}
+
                                 {
-                                pokemon && pokemon.length !== 0 &&
-                                <div className='d-flex flex-column align-items-start mt-5'>
-                                    <h3>{pokemon.name.toUpperCase()}</h3>
-                                    <h5>Habilidades</h5>
-                                    <ul>
-                                        {
-                                            pokemon.abilities.map((ability, index) => (
-                                                <li key={index}>{ability}</li>
-                                            ))
-                                        }
-                                    </ul>
-                                </div>
+                                    pokemon !== undefined && pokemon !== 'not found' && pokemon.length !== 0 &&
+                                    <div className='d-flex flex-column align-items-start mt-5'>
+                                        <h3>{ pokemon.name.toUpperCase() }</h3>
+                                        <h5>Habilidades</h5>
+                                        <ul>
+                                            {
+                                                pokemon.abilities.map((ability, index) => (
+                                                    <li key={index} >{ ability }</li>
+                                                ))
+                                            }
+                                        </ul>
+                                    </div>
                                 }
                             </div>
                             <div className='col ms-5 mb-5' id='history'>
                                 <h3>Historial</h3>
                                 {
-                                history && history.length !== 0 &&
-                                <ul>
-                                    {history.map((item, index) => (
-                                        <li key={index}>{item.term}</li>
-                                    ))}
-                                </ul>
+                                    history && history.length !== 0 &&
+                                    <ul>
+                                        {history.map((item, index) => (
+                                            <li 
+                                                key={ index }
+                                                onClick={ () => handleReUse(item.term) }
+                                                style={{ cursor: 'pointer' }}
+                                            >{item.term}</li>
+                                        ))}
+                                    </ul>
                                 }
                             </div>
                         </div>

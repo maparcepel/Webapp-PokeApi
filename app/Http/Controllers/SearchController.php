@@ -18,8 +18,12 @@ class SearchController extends Controller
             'term' => 'required|max:50',
         ]);
 
+        $term = $request->input('term');
+
+        $lowercaseTerm = strtolower($term);
+
         try {
-            $response = Http::get(BASE_URL . $request->term);
+            $response = Http::get(BASE_URL . $lowercaseTerm);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -27,7 +31,7 @@ class SearchController extends Controller
                 $abilities = $this->getAbilitiesInSpanish($data['abilities']);
 
                 $search = new Search();
-                $search->term = $request->term;
+                $search->term = ucfirst($lowercaseTerm);
                 $search->session_id = $request->session()->getId();
                 $search->save();
 
@@ -42,7 +46,7 @@ class SearchController extends Controller
                     'history' => $history
                 ]);
             } else {
-                return response()->json('Pokémon no encontrado');
+                return response()->json(['error' => 'Pokemon no encontrado'], 400);
             }
         } catch (Exception $e) {
             Log::error('Error al guardar la búsqueda: ' . $e->getMessage());
